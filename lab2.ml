@@ -43,10 +43,19 @@ To think about before you start coding:
 
 Now implement the two functions curry and uncurry.
 ......................................................................*)
+('a * 'b -> 'b) -> ('a ->('b -> 'c))
+let curry (f: 'a * 'b -> 'c) = 
+	fun (x: 'a) ->
+	  fun (y: 'b) -> f(x , y) ;;
 
-let curry = fun _ -> failwith "curry not implemented" ;;
+
      
-let uncurry = fun _ -> failwith "uncurry not implemented" ;;
+(*let uncurry (f: ('a -> 'b) -> 'c) = 
+  fun (t: ('a *'b)) -> match t with
+    (x , y) -> f x y;; *)
+
+let uncurry (f: ('a -> 'b) -> 'c) = 
+  fun (x, y) -> f x y
 
 (*......................................................................
 Exercise 2: OCaml's built in binary operators, like ( + ) and ( * ) are
@@ -115,6 +124,15 @@ instead of an int.
 
 let max_list (lst : int list) : int option =
   failwith "max_list not implemented" ;;
+
+  let rec max_list (lst : int list) : int option  =
+  match lst with
+  [] -> None
+  | [elt] -> Some elt
+  | head :: tail -> Some (match max_list tail with
+  | None -> head
+  | Some x -> if head > x then head else x);;
+  
   
 (*......................................................................
 Exercise 5: Write a function to return the smaller of two int options,
@@ -124,7 +142,11 @@ useful.
 ......................................................................*)
 
 let min_option (x : int option) (y : int option) : int option =
-  failwith "min_option not implemented" ;;
+  match x , y with
+ | None, None -> None
+ | None, Some y -> Some y
+ | Some x, None -> Some x
+ | Some x, Some y -> if x < y then (Some x) else (Some y);;
      
 (*......................................................................
 Exercise 6: Write a function to return the larger of two int options, or
